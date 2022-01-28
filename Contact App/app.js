@@ -1,10 +1,10 @@
 // local module
-const { checkStatus, simpanContact, questions } = require('./contact')
+const { checkStatus, simpanContact, questions, getContacts } = require('./contact')
 
 // third party modules
 const yargs = require('yargs')
 
-// command add.
+// command add / Create.
 yargs.command({
 	command: 'add',
 	describe: 'Menambahkan contact baru',
@@ -42,6 +42,41 @@ yargs.command({
 		// checkStatus / folder and file is exist.
 		checkStatus()
 		questions()
+	},
+})
+
+// command Read / Get Contacts
+yargs.command({
+	command: 'getContacts',
+	describe: 'Menampilkan semua kontak atau satu kontak.',
+	builder: {
+		nama: {
+			describe: 'mencari dengan nama',
+			demandOption: false,
+			type: 'string',
+		},
+		email: {
+			describe: 'mencari dengan email',
+			demandOption: false,
+			type: 'string',
+		},
+		noHp: {
+			describe: 'mencari dengan noHp',
+			demandOption: false,
+			type: 'string',
+		},
+	},
+	handler(argv) {
+		// check status
+		checkStatus()
+
+		// check argv
+		const check = argv.nama || argv.email || argv.noHp
+		if (!check) {
+			getContacts()
+			return false
+		}
+		getContacts((key = check))
 	},
 })
 

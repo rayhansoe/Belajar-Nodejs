@@ -36,16 +36,24 @@ const questionMaker = question => {
 	})
 }
 
-// simpan data
-const simpanContact = (nama, email, noHp, isDirect = true) => {
+// getFile
+const getFile = () => {
 	// target File
 	const targetFile = fs.readFileSync(filePath, 'utf-8')
 
-	// amanin data
-	const contact = { nama, email, noHp }
-
 	// from file raw parse to JSON
 	const contacts = JSON.parse(targetFile)
+
+	return contacts
+}
+
+// simpan data
+const simpanContact = (nama, email, noHp, isDirect = true) => {
+	// get file & filePath
+	const contacts = getFile()
+
+	// amanin data
+	const contact = { nama, email, noHp }
 
 	// check nama duplicate
 	const isDuplicate = contacts.find(contact => contact.nama === nama)
@@ -133,8 +141,57 @@ const reAsk = async () => {
 	}
 }
 
+// getContacts
+const getContacts = (key = '') => {
+	// get contacts
+	const contacts = getFile()
+
+	// check contacts
+	if (!contacts.length) {
+		console.log('Tidak ada data yang tersedia saat ini.')
+		closeApp()
+		return false
+	}
+
+	// get all contacts
+	if (!key && contacts) {
+		console.table(contacts)
+		closeApp()
+	}
+
+	// get by key
+	if (key && contacts) {
+		getByKey(key, contacts)
+		closeApp()
+	}
+}
+
+// get by key
+const getByKey = (key, contacts) => {
+	// filter by key
+	const byName = contacts.filter(ct => ct.nama === key)
+	const byEmail = contacts.filter(ct => ct.email === key)
+	const byNoHp = contacts.filter(ct => ct.noHp === key)
+
+	// filter by key
+	const contact =
+		(byName.length && byName) || (byEmail.length && byEmail) || (byNoHp.length && byNoHp)
+
+	// check contact
+	if (!contact) {
+		console.log('Data yang anda masukan tidak tersedia atau tidak valid.')
+		closeApp()
+		return false
+	}
+
+	// print contact
+	console.table(contact)
+	closeApp()
+}
+
 module.exports = {
 	questions,
 	checkStatus,
 	simpanContact,
+	getContacts,
 }
