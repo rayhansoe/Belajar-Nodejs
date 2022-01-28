@@ -8,5 +8,9 @@
   },
   "keywords": [],
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "validator": "^13.7.0",
+    "yargs": "^17.3.1"
+  }
 }
